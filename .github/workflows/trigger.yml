@@ -1,0 +1,26 @@
+name: Trigger Workflow in Repo B
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger workflow in Repo B
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.REPO_B_PAT }}
+          script: |
+            const { owner, repo } = context.repo;
+            const repoB = 'bshadmehr-generous/test-between-repo-call-b';
+            const [repoBOwner, repoBRepo] = repoB.split('/');
+            await github.rest.actions.createWorkflowDispatch({
+              owner: repoBOwner,
+              repo: repoBRepo,
+              workflow_id: 'triggered-workflow.yml',
+              ref: 'main'
+            });
