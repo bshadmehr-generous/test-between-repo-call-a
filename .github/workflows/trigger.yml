@@ -1,4 +1,4 @@
-name: Trigger Workflow in Repo B
+name: Build and Push Artifacts
 
 on:
   push:
@@ -6,21 +6,27 @@ on:
       - main
 
 jobs:
-  trigger-workflow:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Trigger workflow in Repo B
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.REPO_B_PAT }}
-          script: |
-            const { owner, repo } = context.repo;
-            const repoB = 'bshadmehr-generous/test-between-repo-call-b';
-            const [repoBOwner, repoBRepo] = repoB.split('/');
-            await github.rest.actions.createWorkflowDispatch({
-              owner: repoBOwner,
-              repo: repoBRepo,
-              workflow_id: 'triggered-workflow.yml',
-              ref: 'main'
-            });
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build project
+        run: |
+          echo "Building project..."
+      - name: Push artifacts
+        run: |
+          echo "Pushing artifacts..."
+
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository dispatch to second repo
+        run: |
+          curl -X POST \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/<user>/<target-repo>/dispatches \
+          -d '{"event_type":"workflow_completed"}'
+
