@@ -6,8 +6,10 @@ on:
       - main
 jobs:
   build:
+    env:
+      EXAMPLE_VAR: ${{ vars.SAMPLE_VAR }}"
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: check vars
-        run: echo ${{ vars.SAMPLE_VAR }}
+        run: echo ${{ env.EXAMPLE_VAR }}
