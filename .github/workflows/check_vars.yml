@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     env:
-      EXAMPLE_VAR: ${{ vars.SAMPLE_VAR }}"
+      EXAMPLE_VAR: ${{ vars.SAMPLE_VAR }}
     runs-on: ubuntu-latest
     environment: dev
     steps:
