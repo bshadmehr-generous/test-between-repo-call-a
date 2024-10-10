@@ -9,7 +9,7 @@ jobs:
     env:
       EXAMPLE_VAR: ${{ vars.SAMPLE_VAR }}"
     runs-on: ubuntu-latest
-    environment: production
+    environment: dev
     steps:
       - name: check vars
         run: echo ${{ env.EXAMPLE_VAR }}
